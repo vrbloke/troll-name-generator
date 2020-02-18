@@ -1,40 +1,57 @@
-#Troll name generator v2
-#Assembles random names from collection of vowels and consonants
+#Version 1.1 comes with eXCITING UI & BETTER NAMES
 
+from random import choice
 import random
 import string
-version = "1.0"
 
-print("TROLL NAME GENERATOR v" + version)
-
-#Variables I will use
-vowels = "aeiou"
-vowels_uppercase = 'AEIOU'
+version = "1.1"
 consonants = "bcdfghjklmnpqrstvwxz"
-consonants_uppercase = 'BCDFGHJKLMNPQRSTVWXZ'
-name = ""
-consonant_count = 0
-vowel_count = 0
-
+vowels = "aeiouy"
 random.seed()
 
-#Name generation process
-name += random.choice(string.ascii_uppercase)
-for i in range(5):
-    #Basic process for version 1.0: Only prevent more than 2/3 consonants/vowels in a row
-    if consonant_count > 3:
-        consonant_count = 0
-        name += random.choice(vowels)
-        vowel_count += 1
-    elif vowel_count > 2:
-        vowel_count = 0
-        name += random.choice(consonants)
-        consonant_count += 1
-    else:
-        name += random.choice(string.ascii_lowercase)
-        if name[-1] in vowels:
-            vowel_count += 1
-        else:
-            consonant_count += 1
+#Title
+print("TROLL NAME GENERATOR v" + version)
 
-print(name)
+#UI
+#Functionality:
+#Choose to generate 1, 12 or infinity names
+#Choose whether to display name number
+#Return to this choice whenever 1 or 12 name generation finishes
+
+while 1:
+
+    amount_of_names = input("How many names would you want to generate?")
+
+    if input("Would you want the names to be numbered? y/n") == "y":
+        prefix = True
+    else:
+        prefix = False
+
+    # Name generation process
+    # Choose type of syllable to pick, generate the syllable, make sure it doesn't look terrible with the previous parts
+    for n in range(int(amount_of_names)):
+        name = ""
+
+        while len(name) < 6:
+        # Generate syllable type, make sure it's not too many vowels
+            syllable_type = choice(range(4)) #0. CV, 1. VC, 2. CVC, 3. V
+            if (len(name) > 1) and (syllable_type == 3) and (name[-1] in vowels) and (name[-2] in vowels): continue
+            if syllable_type == 0: #CV
+                syllable = choice(consonants) + choice(vowels)
+            elif syllable_type == 1: #VC
+                syllable = choice(vowels) + choice(consonants)
+            elif syllable_type == 2: #CVC
+                syllable = choice(consonants) + choice(vowels) + choice(consonants)
+            elif syllable_type == 3: #V
+                syllable = choice(vowels)
+
+        # Add the syllable
+            name += syllable
+
+        name = name[0].upper() + name[1:6]
+        print("{}. ".format(n+1) + name if prefix else name)
+
+    #Continue prompt
+    if input("Continue? y/n") != "y":
+        quit()
+
